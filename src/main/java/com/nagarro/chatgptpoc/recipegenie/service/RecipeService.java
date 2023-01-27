@@ -37,12 +37,15 @@ public class RecipeService {
         return recipeRepository.findAll(pageable).stream().collect(Collectors.toList());
     }
 
-    public Recipe addRecipe(Recipe recipe) {
+    public Recipe addRecipe(Recipe recipe) throws APIException {
         if (recipe == null) {
             throw new IllegalArgumentException("Recipe cannot be null");
         }
         if (!StringUtils.hasText(recipe.getTitle())) {
             throw new IllegalArgumentException("Recipe title cannot be null or empty");
+        }
+        if(recipeRepository.findByTitle(recipe.getTitle()) != null){
+            throw new APIException(ErrorCodeEnum.RECIPE_ALREADY_EXIST);
         }
         return recipeRepository.save(recipe);
     }

@@ -23,7 +23,7 @@ public class RecipeController {
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (Exception ex) {
-            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR);
+            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
@@ -34,7 +34,7 @@ public class RecipeController {
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (Exception ex) {
-            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR);
+            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ public class RecipeController {
         } catch (APIException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR);
+            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
@@ -60,7 +60,7 @@ public class RecipeController {
         } catch (APIException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR);
+            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class RecipeController {
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (Exception ex) {
-            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR);
+            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
@@ -82,7 +82,7 @@ public class RecipeController {
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (Exception ex) {
-            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR);
+            throw new APIException(ErrorCodeEnum.INTERNAL_SERVER_ERROR, ex.getMessage());
         }
     }
 
