@@ -5,10 +5,10 @@ FROM openjdk:11-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file from the host to the container
-COPY ../target/recipegenie-0.0.1-SNAPSHOT.jar /app/
+COPY recipegenie-0.0.1-SNAPSHOT.jar /app/
 
 # Expose the port that the application runs on
 EXPOSE 8080
 
 # Start the application
-CMD ["java", "-jar", "your-application-name.jar"]
+CMD ["java", "-jar", "recipegenie-0.0.1-SNAPSHOT.jar"]
