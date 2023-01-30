@@ -5,6 +5,7 @@ import com.nagarro.chatgptpoc.recipegenie.service.RecipeService;
 import com.nagarro.chatgptpoc.recipegenie.utility.APIException;
 import com.nagarro.chatgptpoc.recipegenie.utility.ErrorCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +17,8 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE )
     public Recipe addRecipe(@RequestBody Recipe recipe) throws APIException {
         try {
             return recipeService.addRecipe(recipe);
@@ -27,10 +29,12 @@ public class RecipeController {
         }
     }
 
-    @DeleteMapping("/{recipeId}")
-    public void deleteRecipe(@PathVariable String recipeId) throws APIException {
+    @DeleteMapping(value = "/{recipeId}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public String deleteRecipe(@PathVariable String recipeId) throws APIException {
         try {
             recipeService.deleteRecipe(recipeId);
+            return "Recipe Deleted SuccessFully";
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (Exception ex) {
@@ -38,7 +42,8 @@ public class RecipeController {
         }
     }
 
-    @GetMapping("/{title}")
+    @GetMapping(value = "/{title}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Recipe> searchRecipes(@PathVariable String title) throws APIException {
         try {
             return recipeService.getRecipeByTitle(title);
@@ -51,7 +56,8 @@ public class RecipeController {
         }
     }
 
-    @PutMapping("/{recipeId}")
+    @PutMapping(value = "/{recipeId}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public Recipe updateRecipe(@PathVariable String recipeId, @RequestBody Recipe updatedRecipe) throws APIException {
         try {
             return recipeService.updateRecipe(recipeId, updatedRecipe);
@@ -64,7 +70,7 @@ public class RecipeController {
         }
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Recipe> getAllRecipes() throws APIException {
         try {
             return recipeService.getAllRecipes();
@@ -75,7 +81,8 @@ public class RecipeController {
         }
     }
 
-    @GetMapping("/page/{page}")
+    @GetMapping(value = "/page/{page}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Recipe> getAllRecipesPaginated(@PathVariable int page) throws APIException {
         try {
             return recipeService.getAllRecipesPaginated(page);

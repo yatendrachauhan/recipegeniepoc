@@ -6,6 +6,7 @@ import com.nagarro.chatgptpoc.recipegenie.utility.APIException;
 import com.nagarro.chatgptpoc.recipegenie.utility.ErrorCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,14 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping(value = "/api/admin")
+
 public class LoginController {
     private final UserService userService;
     @Autowired
     public LoginController(UserService userService) {
         this.userService = userService;
     }
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) throws APIException {
         try{
             if (userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
@@ -36,7 +39,8 @@ public class LoginController {
         }
     }
 
-    @PostMapping("/logout")
+    @PostMapping(value = "/logout",
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public String logout(HttpSession session) throws APIException {
         String email = (String) session.getAttribute("username");
         if(email==null){
