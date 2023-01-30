@@ -1,6 +1,7 @@
 package com.nagarro.chatgptpoc.recipegenie.controller;
 
 import com.nagarro.chatgptpoc.recipegenie.model.LoginRequest;
+import com.nagarro.chatgptpoc.recipegenie.model.LoginResponse;
 import com.nagarro.chatgptpoc.recipegenie.service.UserService;
 import com.nagarro.chatgptpoc.recipegenie.utility.APIException;
 import com.nagarro.chatgptpoc.recipegenie.utility.ErrorCodeEnum;
@@ -26,13 +27,13 @@ public class LoginController {
     }
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) throws APIException {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpSession session) throws APIException {
         try{
             if (userService.authenticate(loginRequest.getUsername(), loginRequest.getPassword())) {
                 session.setAttribute("username",loginRequest.getUsername());
-                return new ResponseEntity<>("Login Successful for User " + loginRequest.getUsername(), HttpStatus.OK);
+                return new ResponseEntity<>(new LoginResponse("Login Successful for User " + loginRequest.getUsername()), HttpStatus.OK);
             } else {
-                return new ResponseEntity<>("Invalid Credentials", HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<>(new LoginResponse("Invalid Credentials"), HttpStatus.UNAUTHORIZED);
             }
         }catch (IllegalArgumentException ex){
             throw new APIException(ErrorCodeEnum.USER_BAD_REQUEST, "for Login");
