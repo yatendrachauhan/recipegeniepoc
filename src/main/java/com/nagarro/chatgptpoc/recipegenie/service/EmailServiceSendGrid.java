@@ -6,7 +6,9 @@ import com.sendgrid.*;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -14,14 +16,17 @@ import java.io.IOException;
 import java.util.List;
 
 @Service
+@Slf4j
 public class EmailServiceSendGrid {
 
     @Autowired
     UserRepository userRepository;
-    private final String API_KEY = "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";
+    @Value("${API_KEY_SEND_GRID:demo}")
+    private String API_KEY_SEND_GRID;
 
     @Async
     public void sendEmail(String subject, String content) {
+        log.info("API Key is : " + API_KEY_SEND_GRID);
         Email from = new Email("recipegenie07@gmail.com");
         Content emailContent = new Content("text/plain", content);
         List<User> users = userRepository.findAll();
@@ -30,7 +35,7 @@ public class EmailServiceSendGrid {
         for (int i=1;i<users.size();i++) {
             mail.personalization.get(0).addTo(new Email(users.get(i).getEmail()));
         }
-        SendGrid sg = new SendGrid(API_KEY);
+        SendGrid sg = new SendGrid(API_KEY_SEND_GRID);
         Request request = new Request();
         try {
             request.setMethod(Method.POST);

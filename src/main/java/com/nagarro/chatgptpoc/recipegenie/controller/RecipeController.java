@@ -1,13 +1,14 @@
 package com.nagarro.chatgptpoc.recipegenie.controller;
 
+import com.nagarro.chatgptpoc.recipegenie.model.GenericResponse;
 import com.nagarro.chatgptpoc.recipegenie.model.PaginatedRecipe;
 import com.nagarro.chatgptpoc.recipegenie.model.Recipe;
 import com.nagarro.chatgptpoc.recipegenie.service.RecipeService;
 import com.nagarro.chatgptpoc.recipegenie.utility.APIException;
 import com.nagarro.chatgptpoc.recipegenie.utility.ErrorCodeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class RecipeController {
     @PostMapping
     public Recipe addRecipe(@RequestBody Recipe recipe) throws APIException {
         try {
+
             return recipeService.addRecipe(recipe);
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
@@ -33,11 +35,11 @@ public class RecipeController {
         }
     }
 
-    @DeleteMapping("/{recipeId}")
-    public ResponseEntity<String> deleteRecipe(@PathVariable String recipeId) throws APIException {
+    @DeleteMapping(value = "/{recipeId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public GenericResponse deleteRecipe(@PathVariable String recipeId) throws APIException {
         try {
             recipeService.deleteRecipe(recipeId);
-            return new ResponseEntity<>("Recipe with id: " + recipeId + " deleted.", HttpStatus.OK);
+            return new GenericResponse("recipe deleted with id: " + recipeId);
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (APIException ex) {
