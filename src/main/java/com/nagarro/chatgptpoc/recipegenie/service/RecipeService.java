@@ -1,11 +1,13 @@
 package com.nagarro.chatgptpoc.recipegenie.service;
 
+import com.nagarro.chatgptpoc.recipegenie.model.PaginatedRecipe;
 import com.nagarro.chatgptpoc.recipegenie.model.Recipe;
 import com.nagarro.chatgptpoc.recipegenie.repository.RecipeRepository;
 import com.nagarro.chatgptpoc.recipegenie.utility.APIException;
 import com.nagarro.chatgptpoc.recipegenie.utility.ErrorCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,17 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
 
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    public EmailServiceSendGrid emailService;
+
+    @Autowired
+    public EmailServiceMailTrap emailService2;
 
     @Autowired
     public RecipeService(RecipeRepository recipeRepository) {
@@ -32,9 +39,15 @@ public class RecipeService {
         return recipeRepository.findAll();
     }
 
-    public List<Recipe> getAllRecipesPaginated(int page) {
+    public PaginatedRecipe getAllRecipesPaginated(int page) {
         Pageable pageable = PageRequest.of(page-1, pageSize);
-        return recipeRepository.findAll(pageable).stream().collect(Collectors.toList());
+        PaginatedRecipe recipePage = new PaginatedRecipe();
+        Page<Recipe> pageContent = recipeRepository.findAll(pageable);
+        recipePage.setRecipes(pageContent.getContent());
+        recipePage.setTotalRecipes(pageContent.getTotalElements());
+        recipePage.setTotalPages(pageContent.getTotalPages());
+        recipePage.setPageSize(pageContent.getNumberOfElements());
+        return recipePage;
     }
 
     public Recipe addRecipe(Recipe recipe) throws APIException {
@@ -47,14 +60,24 @@ public class RecipeService {
         if(recipeRepository.findByTitle(recipe.getTitle()) != null){
             throw new APIException(ErrorCodeEnum.RECIPE_ALREADY_EXIST);
         }
-        return recipeRepository.save(recipe);
+
+        Recipe newRecipe = recipeRepository.save(recipe);
+        emailService.sendEmail("Recipe Added", "Recipe Added: " + newRecipe);
+        emailService2.sendEmail("Recipe Added", "Recipe Added: " + newRecipe);
+        return newRecipe;
     }
 
-    public void deleteRecipe(String recipeId) {
+    public void deleteRecipe(String recipeId) throws APIException {
         if (!StringUtils.hasText(recipeId)) {
             throw new IllegalArgumentException("Recipe id cannot be null or empty");
         }
-        recipeRepository.deleteById(recipeId);
+        if (recipeRepository.existsById(recipeId)) {
+            recipeRepository.deleteById(recipeId);
+            emailService.sendEmail("Recipe Deleted", "Recipe with id: " + recipeId + " deleted.");
+            emailService2.sendEmail("Recipe Deleted", "Recipe with id: " + recipeId + " deleted.");
+        } else {
+            throw new APIException(ErrorCodeEnum.RECIPE_NOT_FOUND);
+        }
     }
 
     public Optional<Recipe> getRecipeById(String recipeId) {
@@ -87,7 +110,10 @@ public class RecipeService {
         recipeToUpdate.setEncodedImage(updatedRecipe.getEncodedImage());
         recipeToUpdate.setCookingTime(updatedRecipe.getCookingTime());
         recipeToUpdate.setServingSize(updatedRecipe.getServingSize());
-        return recipeRepository.save(recipeToUpdate);
+        recipeRepository.save(recipeToUpdate);
+        emailService.sendEmail("Recipe Updated", "Updated Recipe: " + recipeToUpdate);
+        emailService2.sendEmail("Recipe Updated", "Updated Recipe: " + recipeToUpdate);
+        return recipeToUpdate;
     }
 
 }

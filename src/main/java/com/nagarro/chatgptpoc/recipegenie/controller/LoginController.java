@@ -42,12 +42,12 @@ public class LoginController {
 
     @PostMapping(value = "/logout",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String logout(HttpSession session) throws APIException {
+    public ResponseEntity<String> logout(HttpSession session) throws APIException {
         String email = (String) session.getAttribute("username");
         if(email==null){
             throw new APIException(ErrorCodeEnum.USER_BAD_REQUEST, "User not logged In");
         }
         session.removeAttribute("username");
-        return "Successfully Logged Out User " + email;
+        return new ResponseEntity<>("Successfully Logged Out User " + email, HttpStatus.OK);
     }
 }
