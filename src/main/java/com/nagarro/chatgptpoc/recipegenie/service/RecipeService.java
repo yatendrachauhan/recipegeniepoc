@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -40,7 +41,7 @@ public class RecipeService {
     }
 
     public PaginatedRecipe getAllRecipesPaginated(int page) {
-        Pageable pageable = PageRequest.of(page-1, pageSize);
+        Pageable pageable = PageRequest.of(page-1, pageSize, Sort.by(Sort.Direction.DESC, "id"));
         PaginatedRecipe recipePage = new PaginatedRecipe();
         Page<Recipe> pageContent = recipeRepository.findAll(pageable);
         recipePage.setRecipes(pageContent.getContent());
