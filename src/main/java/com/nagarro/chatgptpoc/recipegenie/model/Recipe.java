@@ -6,11 +6,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Comparator;
+
 
 @Document(collection = "recipes")
 @Getter
 @Setter
-public class Recipe {
+public class Recipe   {
 
     @Id
     private String id;

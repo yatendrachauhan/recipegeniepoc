@@ -7,9 +7,12 @@ import com.nagarro.chatgptpoc.recipegenie.service.RecipeService;
 import com.nagarro.chatgptpoc.recipegenie.utility.APIException;
 import com.nagarro.chatgptpoc.recipegenie.utility.ErrorCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -76,7 +79,9 @@ public class RecipeController {
     @GetMapping
     public List<Recipe> getAllRecipes() throws APIException {
         try {
-            return recipeService.getAllRecipes();
+            List<Recipe> recipes = recipeService.getAllRecipes();
+            Collections.sort(recipes,Comparator.comparing(Recipe::getId).reversed());
+            return recipes;
         } catch (IllegalArgumentException ex) {
             throw new APIException(ErrorCodeEnum.RECIPE_BAD_REQUEST, ex.getMessage());
         } catch (Exception ex) {
