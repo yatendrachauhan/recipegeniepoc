@@ -63,7 +63,7 @@ public class RecipeService {
         }
 
         Recipe newRecipe = recipeRepository.save(recipe);
-       /* emailService.sendEmail("Recipe Added", String.format("New Recipe (%s) added.", newRecipe.getTitle()));*/
+        emailService.sendEmail("Recipe Added", String.format("New Recipe (%s) added.", newRecipe.getTitle()));
         emailService2.sendEmail("Recipe Added", String.format("New Recipe (%s) added.", newRecipe.getTitle()));
         return newRecipe;
     }
@@ -74,7 +74,7 @@ public class RecipeService {
         }
         if (recipeRepository.existsById(recipeId)) {
             recipeRepository.deleteById(recipeId);
-            /*emailService.sendEmail("Recipe Deleted", "Recipe with id: " + recipeId + " deleted.");*/
+            emailService.sendEmail("Recipe Deleted", "Recipe with id: " + recipeId + " deleted.");
             emailService2.sendEmail("Recipe Deleted", "Recipe with id: " + recipeId + " deleted.");
         } else {
             throw new APIException(ErrorCodeEnum.RECIPE_NOT_FOUND);
@@ -112,7 +112,7 @@ public class RecipeService {
         recipeToUpdate.setCookingTime(updatedRecipe.getCookingTime());
         recipeToUpdate.setServingSize(updatedRecipe.getServingSize());
         recipeRepository.save(recipeToUpdate);
-       /* emailService.sendEmail("Recipe Updated", String.format("Recipe with id %s and title %s updated.", recipeId, recipeToUpdate.getTitle());*/
+        emailService.sendEmail("Recipe Updated", String.format("Recipe with id %s and title %s updated.", recipeId, recipeToUpdate.getTitle()));
         emailService2.sendEmail("Recipe Updated", String.format("Recipe with id %s and title %s has been updated.", recipeId, recipeToUpdate.getTitle()));
         return recipeToUpdate;
     }
