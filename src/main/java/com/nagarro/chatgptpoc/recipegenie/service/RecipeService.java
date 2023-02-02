@@ -63,8 +63,8 @@ public class RecipeService {
         }
 
         Recipe newRecipe = recipeRepository.save(recipe);
-       /* emailService.sendEmail("Recipe Added", "Recipe Added: " + newRecipe);*/
-        emailService2.sendEmail("Recipe Added", "Recipe Added: " + newRecipe);
+       /* emailService.sendEmail("Recipe Added", String.format("New Recipe (%s) added.", newRecipe.getTitle()));*/
+        emailService2.sendEmail("Recipe Added", String.format("New Recipe (%s) added.", newRecipe.getTitle()));
         return newRecipe;
     }
 
@@ -112,8 +112,8 @@ public class RecipeService {
         recipeToUpdate.setCookingTime(updatedRecipe.getCookingTime());
         recipeToUpdate.setServingSize(updatedRecipe.getServingSize());
         recipeRepository.save(recipeToUpdate);
-       /* emailService.sendEmail("Recipe Updated", "Updated Recipe: " + recipeToUpdate);*/
-        emailService2.sendEmail("Recipe Updated", "Updated Recipe: " + recipeToUpdate);
+       /* emailService.sendEmail("Recipe Updated", String.format("Recipe with id %s and title %s updated.", recipeId, recipeToUpdate.getTitle());*/
+        emailService2.sendEmail("Recipe Updated", String.format("Recipe with id %s and title %s has been updated.", recipeId, recipeToUpdate.getTitle()));
         return recipeToUpdate;
     }
 
